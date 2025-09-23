@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Práctica de Pandas y NumPy: Análisis de Datos de Airbnb NYC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        .output-block {
+            background-color: #f1f5f9;
+            color: #334155;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .graphic-output {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .graphic-output img {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            border-radius: 0.25rem;
+        }
+        .analysis-text {
+            background-color: #f8fafc;
+            border-left: 4px solid #6366f1;
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .note-text {
+            background-color: #fffbeb;
+            border-left: 4px solid #facc15;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-4xl">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 mb-2">Guía Práctica de Pandas y NumPy</h1>
+            <p class="text-xl text-slate-600">Análisis Exploratorio de Datos (EDA) con el Dataset de Airbnb NYC</p>
+        </header>
+
+        <main>
+            <!-- Sections 1-5 -->
+            <section>
+                <h2><strong>1. Introducción</strong></h2>
+                <p>
+                    ¡Bienvenido a esta guía práctica! El objetivo de hoy es aprender a utilizar las librerías fundamentales de Python para la ciencia de datos: <strong>Pandas</strong> y <strong>NumPy</strong>. Realizaremos un análisis exploratorio de datos (EDA) sobre un conjunto de datos real de alojamientos de Airbnb en la ciudad de Nueva York.
+                </p>
+            </section>
+            <section>
+                <h2><strong>2. Cargando las Librerías</strong></h2>
+                <pre class="code-block"><code class="python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns</code></pre>
+            </section>
+            <section>
+                <h2><strong>3. Cargando el Conjunto de Datos</strong></h2>
+                <pre class="code-block"><code class="python">df = pd.read_csv('airbnb_nyc.csv', delimiter=',')</code></pre>
+            </section>
+            <section>
+                <h2><strong>4. Primera Mirada a los Datos (Exploración Inicial)</strong></h2>
+                <h3>Visualizar las primeras filas con <code>.head()</code></h3>
+                <pre class="code-block"><code class="python">print(df.head())</code></pre>
+                <div class="output-block"><pre>
+      id                                              name  host_id  host_name neighbourhood_group neighbourhood  latitude  longitude        room_type  price  minimum_nights  number_of_reviews last_review  reviews_per_month  calculated_host_listings_count  availability_365
+0   2539                Clean & quiet apt home by the park     2787      John            Brooklyn    Kensington  40.64749  -73.97237     Private room    149               1                  9  2018-10-19               0.21                               6               365
+1   2595                             Skylit Midtown Castle     2845  Jennifer           Manhattan       Midtown  40.75362  -73.98377  Entire home/apt    225               1                 45  2019-05-21               0.38                               2               355
+2   3647               THE VILLAGE OF HARLEM....NEW YORK !     4632 Elisabeth           Manhattan        Harlem  40.80902  -73.94190     Private room    150               3                  0         NaN                NaN                               1               365
+3   3831                   Cozy Entire Floor of Brownstone     4869  LisaRoxanne         Brooklyn  Clinton Hill  40.68514  -73.95976  Entire home/apt     89               1                270  2019-07-05               4.64                               1               194
+4   5022  Entire Apt: Spacious Studio/Loft by central park     7192     Laura           Manhattan   East Harlem  40.79851  -73.94399  Entire home/apt     80              10                  9  2018-11-19               0.10                               1                 0
+</pre></div>
+            </section>
+            <section>
+                <h2><strong>5. Resúmenes y Agrupaciones</strong></h2>
+                <h3>Precio promedio por grupo de vecindario</h3>
+                <pre class="code-block"><code class="python">precio_promedio_por_distrito = df.groupby('neighbourhood_group')['price'].mean().round(2)
+print(precio_promedio_por_distrito)</code></pre>
+                 <div class="output-block"><pre>
+neighbourhood_group
+Bronx             87.50
+Brooklyn         124.38
+Manhattan        196.88
+Queens            99.52
+Staten Island    114.81
+Name: price, dtype: float64
+</pre></div>
+            </section>
+            
+            <!-- Section 6 -->
+            <section>
+                <h2><strong>6. Visualización y Análisis de Datos (Dataset Básico)</strong></h2>
+
+                <h3>Análisis de la Distribución de Precios</h3>
+                <pre class="code-block"><code class="python">plt.figure(figsize=(10, 6))
+sns.histplot(df[df['price'] < df['price'].quantile(0.99)]['price'], bins=50, kde=True)
+plt.title('Distribución de Precios de Airbnb en NYC (hasta el percentil 99)')
+plt.xlabel('Precio (USD)')
+plt.ylabel('Frecuencia')
+plt.show()</code></pre>
+                <div class="graphic-output">
+                    <img src="distribucion_precios.png" alt="Histograma de la distribución de precios de Airbnb en NYC">
+                </div>
+                <div class="analysis-text">
+                    <p><strong>Interpretación:</strong> El histograma nos muestra una distribución de precios con un claro <strong>sesgo a la derecha</strong>. Esto significa que la gran mayoría de los alojamientos se concentran en el rango de precios más bajos (entre $50 y $200), mientras que hay una cantidad mucho menor de propiedades con precios muy elevados.</p>
+                </div>
+
+                <h3>Análisis de Alojamientos por Vecindario (Top 10)</h3>
+                <pre class="code-block"><code class="python">top_10_neighbourhoods = df['neighbourhood'].value_counts().nlargest(10).index
+plt.figure(figsize=(10, 8))
+sns.countplot(y='neighbourhood', data=df[df['neighbourhood'].isin(top_10_neighbourhoods)], order=top_10_neighbourhoods)
+plt.title('Top 10 Vecindarios con Más Alojamientos en NYC')
+plt.xlabel('Cantidad de Alojamientos')
+plt.ylabel('Vecindario')
+plt.tight_layout()
+plt.show()</code></pre>
+                 <div class="graphic-output">
+                     <img src="alojamientos_por_distrito.png" alt="Gráfico de barras del número de alojamientos por distrito">
+                </div>
+                <div class="analysis-text">
+                    <p><strong>Interpretación:</strong> Al enfocarnos en los 10 vecindarios con más ofertas, vemos que áreas como Williamsburg y Bedford-Stuyvesant en Brooklyn, y Harlem en Manhattan, son extremadamente populares. Esto nos da una vista más granular que el análisis por distrito y nos permite identificar los verdaderos "hotspots" de Airbnb en la ciudad.</p>
+                </div>
+                
+                <h3>Análisis de Precios por Vecindario (Primeros 5)</h3>
+                <pre class="code-block"><code class="python">fig, axes = plt.subplots(1, 5, figsize=(20, 5))
+fig.suptitle('Distribución de Precios por Vecindario (Muestra)', fontsize=16)
+
+distritos = df['neighbourhood'].unique()[:5]
+for i, group in enumerate(distritos):
+    sns.violinplot(y='price', data=df[df['neighbourhood'] == group], ax=axes[i])
+    axes[i].set_title(group)
+    axes[i].set_ylim(0, 800)
+
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.show()</code></pre>
+                <div class="graphic-output">
+                    <img src="precios_por_distrito_violin.png" alt="Gráficos de violín de la distribución de precios por distrito">
+                </div>
+                <div class="analysis-text">
+                     <p><strong>Interpretación:</strong> Este análisis nos permite comparar directamente la distribución de precios entre vecindarios específicos. Por ejemplo, podemos ver que Midtown tiene una mediana de precios significativamente más alta y una mayor dispersión en comparación con Kensington o Clinton Hill, lo que refleja la alta demanda y el carácter céntrico de esa zona de Manhattan.</p>
+                </div>
+            </section>
+            
+            <!-- Section 7 (new section) -->
+            <section>
+                <h2><strong>7. Análisis de Variables Específicas</strong></h2>
+                <div class="note-text">
+                    <p><strong>Nota Importante:</strong> Los siguientes análisis requieren que el DataFrame <code>df</code> contenga columnas adicionales como <code>bedrooms</code>, <code>bathrooms</code>, y <code>review_scores_cleanliness</code>. Estas columnas estaban presentes en el conjunto de datos original del notebook y son necesarias para ejecutar estos fragmentos de código específicos.</p>
+                </div>
+
+                <h3>Histogramas de Variables Clave</h3>
+                <pre class="code-block"><code class="python">plt.figure(figsize=(12,10))
+colores=['#993B61','#1745D7','#6D9A62','#80B642']
+vars_a_dibujar = ['price', 'bedrooms','bathrooms','accommodates']
+for i, var in enumerate(vars_a_dibujar):
+    plt.subplot(2,2,i+1)
+    if var == 'price':
+        plt.hist(df[df[var] < df[var].quantile(0.95)][var], 50, color=colores[i])
+    else:
+        plt.hist(df[var].dropna(), bins=max(1, df[var].nunique()), color=colores[i])
+    texto_de_titulo = "Histograma de " + var
+    plt.title(texto_de_titulo)
+plt.tight_layout()
+plt.show()</code></pre>
+                <div class="graphic-output">
+                    <img src="histogramas_adicionales.png" alt="Histogramas de frecuencias de algunas variables">
+                </div>
+                 <div class="analysis-text">
+                    <p><strong>Interpretación:</strong> Estos histogramas nos ayudan a entender la distribución de características fundamentales de las propiedades. Por ejemplo, la mayoría de los listados son de 1 o 2 habitaciones y tienen 1 solo baño. La capacidad (accommodates) se centra principalmente en 2 a 4 personas.</p>
+                </div>
+                
+                <h3>Relación de Precio con Otras Variables</h3>
+                <pre class="code-block"><code class="python">plt.figure(figsize=(12,10))
+vars_a_dibujar =['bedrooms','bathrooms','number_of_reviews','review_scores_cleanliness']
+for i, var in enumerate(vars_a_dibujar):
+    plt.subplot(2,2,i+1)
+    sns.boxplot(x = var, y='price', data = df, showmeans=True)
+    plt.ylim(0, df['price'].quantile(0.9)) 
+    texto_del_titulo = "Diagrama de cajas de Precio vs. " + var
+    plt.ylabel("Precio")
+    plt.title(texto_del_titulo)
+plt.tight_layout()
+plt.show()</code></pre>
+                <div class="graphic-output">
+                    <img src="boxplots_adicionales.png" alt="Boxplot de algunas variables">
+                </div>
+                <div class="analysis-text">
+                    <p><strong>Interpretación:</strong> Los diagramas de caja muestran una tendencia clara: a mayor número de habitaciones (<code>bedrooms</code>) y baños (<code>bathrooms</code>), el precio tiende a aumentar. Sin embargo, la relación con las variables de reseñas (<code>number_of_reviews</code>, <code>review_scores_cleanliness</code>) no es tan directa, sugiriendo que tener más reseñas o mejores calificaciones de limpieza no garantiza un precio más alto.</p>
+                </div>
+
+                <h3>Análisis de Correlación Específico</h3>
+                <pre class="code-block"><code class="python">correlation = df[['price','bedrooms','bathrooms','number_of_reviews','review_scores_cleanliness']].corr()
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Mapa de Correlación de Variables Seleccionadas')
+plt.show()</code></pre>
+                <div class="graphic-output">
+                    <img src="mapa_correlacion_reducido.png" alt="Diagrama de correlaciones">
+                </div>
+                <div class="analysis-text">
+                    <p><strong>Interpretación:</strong> Este mapa de calor enfocado nos da una visión más limpia. Confirma que <code>bedrooms</code> y <code>bathrooms</code> tienen la correlación positiva más fuerte con <code>price</code> de este grupo. Aunque la correlación no es extremadamente alta (0.33 y 0.30), es la más significativa. Las variables de reseñas muestran una correlación casi nula o ligeramente negativa con el precio.</p>
+                </div>
+
+            </section>
+        </main>
+        
+        <footer class="text-center mt-16 text-slate-500">
+            <p>&copy; 2025 Programación para Ciencia de Datos</p>
+        </footer>
+    </div>
+    
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
+
